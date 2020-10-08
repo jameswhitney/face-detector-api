@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcrypt-nodejs");
 
 const app = express();
 app.use(express.json());
@@ -24,6 +25,13 @@ const database = {
       joined: new Date(),
     },
   ],
+  login: [
+    {
+      id: "987",
+      hash: "",
+      email: "john@gmail.com",
+    },
+  ],
 };
 
 app.get("/", (req, res) => {
@@ -31,6 +39,20 @@ app.get("/", (req, res) => {
 });
 
 app.post("/signin", (req, res) => {
+  bcrypt.compare(
+    "apples",
+    `$2a$10$rifABSxMBe0NZPfnVFFZMO6ewYUrAQuCmUDf68sMy7bmEgd3pq/Yq`,
+    function (err, res) {
+      console.log("first guess", res);
+    }
+  );
+  bcrypt.compare(
+    "veggies",
+    `$2a$10$rifABSxMBe0NZPfnVFFZMO6ewYUrAQuCmUDf68sMy7bmEgd3pq/Yq`,
+    function (err, res) {
+      console.log("second guess", res);
+    }
+  );
   if (
     req.body.email === database.users[0].email &&
     req.body.password === database.users[0].password
@@ -83,15 +105,8 @@ app.put("/image", (req, res) => {
   }
 });
 
+// Load hash from your password DB.
+
 app.listen(3000, () => {
   console.log("app is running on port 3000");
 });
-
-/*
-API Endpoints
-/root --> res = Root response is working
-/signin --> POST = success/fail
-/register --> POST = user object
-/profile/:userId --> GET = user
-/image --> PUT --> update user object to reflect changes in score
-*/
