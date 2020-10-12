@@ -94,23 +94,17 @@ app.get("/profile/:id", (req, res) => {
     })
     .catch(() => res.status(400).json("error getting user"));
 });
-// if (!found) {
-//   res.status(400).json("not found");
-// }
 
 app.put("/image", (req, res) => {
   const { id } = req.body;
-  let found = false;
-  db.users.forEach((user) => {
-    if (user.id === id) {
-      found = true;
-      user.entries++;
-      return res.json(user.entries);
-    }
-  });
-  if (!found) {
-    res.status(400).json("not found");
-  }
+  db("users")
+    .where("id", "=", id)
+    .increment("entries", 1)
+    .returning("entries")
+    .then((entries) => {
+      res.json(entries[0]);
+    })
+    .catch(() => res.status(400).json("unable to get entries"));
 });
 
 // Load hash from your password DB.
