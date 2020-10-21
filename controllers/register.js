@@ -3,13 +3,13 @@ const handleRegister = (db, bcrypt) => (req, res) => {
   if (!email || !name || !password) {
     return res.status(400).json("Incorrect form submission");
   }
-  const emailExists = db
-    .select("email")
-    .from("users")
-    .where("email", "=", email);
-  if (emailExists) {
-    return res.status(400).json("Unable to register. Duplicate entry");
-  } else {
+  // const emailExists = db
+  //   .select("email")
+  //   .from("users")
+  //   .where("email", "=", email);
+  // if (emailExists) {
+  //   return res.status(400).json("Unable to register. Duplicate entry");
+  // } else {
     const hash = bcrypt.hashSync(password);
     db.transaction((trx) => {
       trx
